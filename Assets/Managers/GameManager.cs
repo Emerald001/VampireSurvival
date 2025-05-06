@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
 
         SpawnPlayer();
 
-        //enemyManager.StartSpawning();
+        enemyManager.StartSpawning();
     }
 
     private void SpawnPlayer()

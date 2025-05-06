@@ -15,9 +15,9 @@ public class Enemy : MonoBehaviour, IDamageable
         MaxHealth = config.health;
         Speed = config.speed;
 
-        var enemyVisuals = GetComponent<UnitVisuals>();
-        enemyVisuals.body.sprite = config.enemyModel;
-        enemyVisuals.deathEffect = config.deathEffect;
+        enemyVisuals = GetComponent<UnitVisuals>();
+        //enemyVisuals.body.sprite = config.enemyModel;
+        //enemyVisuals.deathEffect = config.deathEffect;
     }
 
     private async void Update()

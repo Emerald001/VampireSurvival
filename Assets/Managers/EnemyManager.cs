@@ -3,9 +3,10 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
-    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private Enemy enemyPrefab;
+    [SerializeField] private EnemyConfig config;
 
-    private async void StartSpawning()
+    public async void StartSpawning()
     {
         while (true)
         {
@@ -23,7 +24,8 @@ public class EnemyManager : MonoBehaviour
     private void SpawnEnemy()
     {
         Vector3 spawnPosition = GetRandomSpawnPosition();
-        GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+        Enemy enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+        enemy.SetData(config);
     }
 
     private Vector3 GetRandomSpawnPosition()
@@ -31,15 +33,15 @@ public class EnemyManager : MonoBehaviour
         Vector2 mapSize = GameManager.Instance.MapSize; // MapSize is a Vector2
         Vector3 playerPosition = GameManager.Instance.Player.transform.position;
         float safeZoneRadius = 5f; // Define the radius of the safe zone around the player
+        float padding = 0.6f; 
 
         Vector3 randomPosition;
         do
         {
             // Generate a random position within the map boundaries
             randomPosition = new Vector3(
-                Random.Range(-mapSize.x / 2, mapSize.x / 2), // Use x for horizontal boundaries
-                0,
-                Random.Range(-mapSize.y / 2, mapSize.y / 2) // Use y for vertical boundaries
+                Random.Range(-mapSize.x / 2 + padding, mapSize.x / 2 - padding), // Use x for horizontal boundaries
+                Random.Range(-mapSize.y / 2 + padding, mapSize.y / 2 - padding) // Use y for vertical boundaries
             );
         }
         while (Vector3.Distance(randomPosition, playerPosition) < safeZoneRadius);
