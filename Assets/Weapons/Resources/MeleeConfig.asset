@@ -20,9 +20,46 @@ MonoBehaviour:
   attackRange: 2
   weaponDecorations:
   - decorationType: 0
+    projectilePrefab: {fileID: 0}
+    meleeSwingAnimation:
+      distanceCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: -0.000011444092
+          inSlope: 0.40095505
+          outSlope: 0.40095505
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 0.5
+          value: 0.20046608
+          inSlope: 0.000011444092
+          outSlope: 0.000011444092
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 1
+          value: 0
+          inSlope: -0.40093216
+          outSlope: -0.40093216
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      swingAngle: 45
+      duration: 0.2
     extraDamage: 0
     extraFireRate: 0
     areaOfEffectRadius: 0
     projectileSpeed: 0
     knockbackForce: 0
-  weaponPrefab: {fileID: 0}
+  weaponPrefab: {fileID: 8583936654484908848, guid: 49daa444380540c4794b9dd00fb7be23, type: 3}

@@ -443,7 +443,7 @@ MonoBehaviour:
   playerPrefab: {fileID: 392618177558801738, guid: cb19c4b97d19c0642b43bd1742a228e6, type: 3}
   camFollow: {fileID: 519420033}
   enemyManager: {fileID: 823004380}
-  mapSize: {x: 50, y: 30}
+  mapSize: {x: 100, y: 60}
   map: {fileID: 2063966839}
 --- !u!4 &823004382
 Transform:

@@ -14,13 +14,14 @@ public class EnemyManager : MonoBehaviour
         while (true)
         {
             await Task.Delay(2000); // Wait for 2 seconds
-            SpawnEnemy();
 
             if (GlobalNumerals.SpawnEnemies == false)
             {
                 Debug.Log("Enemy Spawning Stopped");
                 break; // Exit the loop if spawning is disabled
             }
+
+            SpawnEnemy();
         }
     }
 
@@ -37,6 +38,8 @@ public class EnemyManager : MonoBehaviour
     {
         Vector2 mapSize = GameManager.Instance.MapSize; // MapSize is a Vector2
         Vector3 playerPosition = GameManager.Instance.Player.transform.position;
+
+        float maxDistance = 20f;
         float safeZoneRadius = 5f; // Define the radius of the safe zone around the player
         float padding = 0.6f; 
 
@@ -49,7 +52,7 @@ public class EnemyManager : MonoBehaviour
                 Random.Range(-mapSize.y / 2 + padding, mapSize.y / 2 - padding) // Use y for vertical boundaries
             );
         }
-        while (Vector3.Distance(randomPosition, playerPosition) < safeZoneRadius);
+        while (Vector3.Distance(randomPosition, playerPosition) < safeZoneRadius || Vector3.Distance(randomPosition, playerPosition) > maxDistance);
 
         return randomPosition;
     }

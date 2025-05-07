@@ -25,21 +25,48 @@ public abstract class WeaponDecorator : Weapon
 
 public class MeleeWeapon : WeaponDecorator
 {
-    public MeleeWeapon(Weapon baseWeapon) : base(baseWeapon)
-    {
+    private readonly MeleeSwingAnimation _swingAnimation;
+    private readonly MeleeHitbox _weaponTransform; // Reference to the weapon's transform
+    private readonly Collider2D weaponCollider;
 
+    public MeleeWeapon(Weapon baseWeapon, MeleeSwingAnimation swingAnimation, MeleeHitbox weaponTransform) : base(baseWeapon)
+    {
+        _swingAnimation = swingAnimation;
+        _weaponTransform = weaponTransform;
+         
+        weaponCollider = weaponTransform.GetComponentInChildren<Collider2D>();
     }
 
     public override void Fire(Vector2 direction)
     {
-        Debug.Log($"Swinging melee weapon for {Damage} damage!");
-        // Add melee-specific logic here (e.g., detecting nearby enemies)
+        _weaponTransform.Damage = Damage; // Set the damage for the melee hitbox
+        Owner.StartCoroutine(Swing());
     }
 
-    public void SwingAnim(Vector2 direction)
+    private System.Collections.IEnumerator Swing()
     {
-        // Logic for swinging the melee weapon
-        Debug.Log($"Swinging melee weapon in direction: {direction}");
+        float elapsedTime = 0f;
+        float startAngle = -_swingAnimation.swingAngle / 2f;
+        float endAngle = _swingAnimation.swingAngle / 2f;
+
+        weaponCollider.enabled = true;
+        while (elapsedTime < _swingAnimation.duration)
+        {
+            float t = elapsedTime / _swingAnimation.duration;
+            float currentAngle = Mathf.Lerp(startAngle, endAngle, t);
+            float distance = _swingAnimation.distanceCurve.Evaluate(t);
+
+            Vector2 offset = Quaternion.Euler(0, 0, currentAngle) * (Vector2.right * distance);
+            _weaponTransform.transform.localPosition = offset;
+            _weaponTransform.transform.localRotation = Quaternion.Euler(0, 0, currentAngle);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        weaponCollider.enabled = false;
+
+        _weaponTransform.transform.localPosition = Vector3.zero;
+        _weaponTransform.transform.localRotation = Quaternion.identity;
     }
 }
 

@@ -43,6 +43,8 @@ public class WeaponHolder : MonoBehaviour
         {
             WeaponDecorationType.RangedDecoration =>
                 new RangedWeapon(equippedWeapon, config.projectilePrefab),
+            WeaponDecorationType.MeleeDecoration =>
+                new MeleeWeapon(equippedWeapon, config.meleeSwingAnimation, weaponObject.GetComponent<MeleeHitbox>()),
             WeaponDecorationType.DamageUpgrade =>
                 new DamageUpgrade(equippedWeapon, config.extraDamage),
             WeaponDecorationType.FireRateUpgrade =>

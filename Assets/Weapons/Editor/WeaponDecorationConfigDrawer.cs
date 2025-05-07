@@ -24,6 +24,11 @@ public class WeaponDecorationConfigDrawer : PropertyDrawer
                 EditorGUI.PropertyField(fieldRect, projectilePrefab);
                 break;
 
+            case WeaponDecorationType.MeleeDecoration:
+                SerializedProperty meleeSwingAnimation = property.FindPropertyRelative("meleeSwingAnimation");
+                EditorGUI.PropertyField(fieldRect, meleeSwingAnimation, true); // Include children
+                break;
+
             case WeaponDecorationType.DamageUpgrade:
                 SerializedProperty extraDamage = property.FindPropertyRelative("extraDamage");
                 EditorGUI.PropertyField(fieldRect, extraDamage);
@@ -64,10 +69,28 @@ public class WeaponDecorationConfigDrawer : PropertyDrawer
             case WeaponDecorationType.KnockbackUpgrade:
                 extraLines = 1;
                 break;
-
+            case WeaponDecorationType.MeleeDecoration:
+                SerializedProperty meleeSwingAnimation = property.FindPropertyRelative("meleeSwingAnimation");
+                extraLines = 1 + CountChildProperties(meleeSwingAnimation); // Include child properties
+                break;
                 // Add cases for other decoration types as needed
         }
 
         return EditorGUIUtility.singleLineHeight * (1 + extraLines) + 2;
+    }
+
+    private int CountChildProperties(SerializedProperty property)
+    {
+        int count = 0;
+        if (property.isExpanded)
+        {
+            SerializedProperty iterator = property.Copy();
+            SerializedProperty endProperty = iterator.GetEndProperty();
+            while (iterator.NextVisible(true) && !SerializedProperty.EqualContents(iterator, endProperty))
+            {
+                count++;
+            }
+        }
+        return count;
     }
 }
