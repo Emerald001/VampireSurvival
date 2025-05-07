@@ -7,10 +7,12 @@ public class Player : MonoBehaviour, IDamageable
     public float Speed { get; set; }
 
     private UnitVisuals visuals;
+    private WeaponHolder weaponHolder;
 
     private void Start()
     {
         visuals = GetComponentInChildren<UnitVisuals>();
+        weaponHolder = GetComponentInChildren<WeaponHolder>();
 
         Health = 100;
         Speed = 5f;
@@ -37,6 +39,11 @@ public class Player : MonoBehaviour, IDamageable
         newPosition.y = Mathf.Clamp(newPosition.y, -(bounds.y / 2) + padding, (bounds.y / 2) - padding);
 
         transform.position = newPosition;
+    }
+
+    public void EquipWeapon(WeaponConfig weapon)
+    {
+        weaponHolder.EquipWeapon(weapon);
     }
 
     public void TakeDamage(int damage)

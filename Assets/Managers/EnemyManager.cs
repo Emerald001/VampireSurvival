@@ -1,10 +1,13 @@
 ﻿using System.Threading.Tasks;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
     [SerializeField] private Enemy enemyPrefab;
     [SerializeField] private EnemyConfig config;
+
+    public static List<Enemy> spawnedEnemies { get; private set; } = new List<Enemy>();
 
     public async void StartSpawning()
     {
@@ -26,6 +29,8 @@ public class EnemyManager : MonoBehaviour
         Vector3 spawnPosition = GetRandomSpawnPosition();
         Enemy enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
         enemy.SetData(config);
+
+        spawnedEnemies.Add(enemy);
     }
 
     private Vector3 GetRandomSpawnPosition()

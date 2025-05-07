@@ -2,10 +2,14 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public float speed = 10f;
-    public int damage = 10;
+    private int damage = 10;
 
-    private void OnTriggerEnter(Collider other)
+    public void SetData(int damage)
+    {
+        this.damage = damage;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
     {
         var damageable = other.GetComponent<IDamageable>();
 

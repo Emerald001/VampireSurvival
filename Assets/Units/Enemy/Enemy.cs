@@ -15,12 +15,10 @@ public class Enemy : MonoBehaviour, IDamageable
         MaxHealth = config.health;
         Speed = config.speed;
 
-        enemyVisuals = GetComponent<UnitVisuals>();
-        //enemyVisuals.body.sprite = config.enemyModel;
-        //enemyVisuals.deathEffect = config.deathEffect;
+        enemyVisuals = GetComponentInChildren<UnitVisuals>();
     }
 
-    private async void Update()
+    private void FixedUpdate()
     {
         var target = GameManager.Instance.Player.transform;
         //if (Vector3.Distance(transform.position, target.position) < AttackRange)
@@ -69,8 +67,10 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void Die()
     {
-        Debug.Log("Enemy has died.");
         enemyVisuals.PlayDeathAnimation();
+
+        // Not super clean, but can stay for now
+        EnemyManager.spawnedEnemies.Remove(this);
         Destroy(gameObject);
     }
 }

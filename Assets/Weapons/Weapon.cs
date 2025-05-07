@@ -1,17 +1,21 @@
 using UnityEngine;
 
-public abstract class Weapon : MonoBehaviour
+public class Weapon
 {
-    public int Damage { get; set; }
-    public float Range { get; set; }
-    public float FireRate { get; set; }
+    public virtual WeaponHolder Owner { get; set; }
 
-    protected virtual void Start()
+    public virtual int Damage { get; set; }
+    public virtual float Range { get; set; }
+    public virtual float FireRate { get; set; }
+
+    public void Initialize(WeaponHolder owner, WeaponConfig config)
     {
-        Damage = 10;
-        Range = 15f;
-        FireRate = 1f;
+        Owner = owner;
+
+        Damage = config.damage;
+        Range = config.attackRange;
+        FireRate = config.fireRate;
     }
 
-    public abstract void Fire(Vector2 direction);
+    public virtual void Fire(Vector2 direction) { }
 }
