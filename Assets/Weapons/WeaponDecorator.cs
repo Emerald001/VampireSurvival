@@ -29,12 +29,15 @@ public class MeleeWeapon : WeaponDecorator
     private readonly MeleeHitbox _weaponTransform; // Reference to the weapon's transform
     private readonly Collider2D weaponCollider;
 
-    public MeleeWeapon(Weapon baseWeapon, MeleeSwingAnimation swingAnimation, MeleeHitbox weaponTransform) : base(baseWeapon)
+    public MeleeWeapon(Weapon baseWeapon, MeleeSwingAnimation swingAnimation, MeleeHitbox weaponTransform, float weaponSize) : base(baseWeapon)
     {
         _swingAnimation = swingAnimation;
         _weaponTransform = weaponTransform;
-         
+
+        _weaponTransform.SetSize(weaponSize); // Set the size of the melee hitbox
+
         weaponCollider = weaponTransform.GetComponentInChildren<Collider2D>();
+        weaponCollider.enabled = false; // Disable the collider initially
     }
 
     public override void Fire(Vector2 direction)
@@ -56,8 +59,7 @@ public class MeleeWeapon : WeaponDecorator
             float currentAngle = Mathf.Lerp(startAngle, endAngle, t);
             float distance = _swingAnimation.distanceCurve.Evaluate(t);
 
-            Vector2 offset = Quaternion.Euler(0, 0, currentAngle) * (Vector2.right * distance);
-            _weaponTransform.transform.localPosition = offset;
+            _weaponTransform.transform.localPosition = new Vector3(0, distance, 0);
             _weaponTransform.transform.localRotation = Quaternion.Euler(0, 0, currentAngle);
 
             elapsedTime += Time.deltaTime;

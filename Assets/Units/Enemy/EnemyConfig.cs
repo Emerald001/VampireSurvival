@@ -6,7 +6,7 @@ public class EnemyConfig : ScriptableObject
     public int health;
     public float speed;
 
-    public float attackRange;
+    public WeaponConfig weaponConfig;
 
     public Sprite enemyModel;
     public GameObject deathEffect;

@@ -9,6 +9,7 @@ public class WeaponDecorationConfig
     // Add specific properties for each decoration type
     public Projectile projectilePrefab; // For RangedDecoration
     public MeleeSwingAnimation meleeSwingAnimation; // For MeleeDecoration
+    public float weaponSize; // For MeleeDecoration
 
     public int extraDamage; // For DamageUpgrade
     public float extraFireRate; // For FireRateUpgrade

@@ -9,12 +9,16 @@ public class Player : MonoBehaviour, IDamageable
     private UnitVisuals visuals;
     private WeaponHolder weaponHolder;
 
+    private bool canMove = true;
+    private bool dead = false;
+
     private void Start()
     {
         visuals = GetComponentInChildren<UnitVisuals>();
         weaponHolder = GetComponentInChildren<WeaponHolder>();
 
-        Health = 100;
+        MaxHealth = 10;
+        Health = MaxHealth;
         Speed = 5f;
     }
 
@@ -25,7 +29,7 @@ public class Player : MonoBehaviour, IDamageable
 
     public void Move()
     {
-        if (!GlobalNumerals.CanMove)
+        if (!GlobalNumerals.CanMove || !canMove)
             return;
 
         var dir = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
@@ -48,8 +52,12 @@ public class Player : MonoBehaviour, IDamageable
 
     public void TakeDamage(int damage)
     {
+        if (dead)
+            return;
+
         Health -= damage;
         visuals.UpdateHealthBar(Health, MaxHealth);
+
         if (Health <= 0)
         {
             Die();
@@ -62,7 +70,24 @@ public class Player : MonoBehaviour, IDamageable
     public void Die()
     {
         Debug.Log("Player has died.");
-        visuals.PlayDeathAnimation();
+        visuals.PlayDeathAnimation(() => 
+        {
+            weaponHolder.Stop();
+            canMove = false;
+            dead = true;
+
+            foreach (var item in EnemyManager.spawnedEnemies)
+            {
+                var direction = (item.transform.position - transform.position).normalized;
+                var dis = Vector3.Distance(item.transform.position, transform.position);
+
+                if (dis < 10)
+                    item.TakeKnockback(direction, (10 - dis) / 2);
+            }
+
+            // Optionally, you can disable the player object or trigger a game over screen here
+            GameManager.Instance.GameOver();
+        });
     }
 }
 

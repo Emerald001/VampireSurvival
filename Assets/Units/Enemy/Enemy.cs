@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Threading.Tasks;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
@@ -8,6 +7,8 @@ public class Enemy : MonoBehaviour, IDamageable
     public float Speed { get; set; }
 
     private UnitVisuals enemyVisuals;
+    private WeaponHolder weaponHolder;
+    private bool canMove = true;
 
     public void SetData(EnemyConfig config)
     {
@@ -16,29 +17,21 @@ public class Enemy : MonoBehaviour, IDamageable
         Speed = config.speed;
 
         enemyVisuals = GetComponentInChildren<UnitVisuals>();
+        weaponHolder = GetComponentInChildren<WeaponHolder>();
+
+        weaponHolder.EquipWeapon(config.weaponConfig);
     }
 
     private void FixedUpdate()
     {
         var target = GameManager.Instance.Player.transform;
-        //if (Vector3.Distance(transform.position, target.position) < AttackRange)
-        //    await Attack();
-        //else
+        if (Vector3.Distance(transform.position, target.position) > weaponHolder.EquippedWeapon?.Range)
             Move(target.position);
-    }
-
-    public virtual async Task Attack()
-    {
-        var target = GameManager.Instance.Player.transform;
-        //if (Vector3.Distance(transform.position, target.position) < AttackRange)
-        //    enemyVisuals.PlayAttackAnimation();
-
-        // Do damage via weapon
     }
 
     public void Move(Vector3 targetPosition)
     {
-        if (!GlobalNumerals.CanMove)
+        if (!GlobalNumerals.CanMove || !canMove)
             return;
 
         var dir = (targetPosition - transform.position).normalized;
@@ -65,12 +58,27 @@ public class Enemy : MonoBehaviour, IDamageable
         enemyVisuals.PlayHitAnimation();
     }
 
+    public void TakeKnockback(Vector2 dir, float power)
+    {
+        canMove = false;
+        
+        float knockbackDuration = 0.5f;
+        Vector3 knockbackTarget = transform.position + (Vector3)(dir.normalized * power);
+
+        LeanTween.cancel(gameObject);
+        LeanTween.move(gameObject, knockbackTarget, knockbackDuration)
+            .setEase(LeanTweenType.easeOutQuad)
+            .setOnComplete(() => canMove = true);
+    }
+
     public void Die()
     {
-        enemyVisuals.PlayDeathAnimation();
+        weaponHolder.Stop();
 
-        // Not super clean, but can stay for now
-        EnemyManager.spawnedEnemies.Remove(this);
-        Destroy(gameObject);
+        enemyVisuals.PlayDeathAnimation(() =>
+        {
+            EnemyManager.spawnedEnemies.Remove(this);
+            Destroy(gameObject);
+        });
     }
 }

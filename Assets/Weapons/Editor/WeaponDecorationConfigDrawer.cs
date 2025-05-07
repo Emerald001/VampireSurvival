@@ -26,6 +26,13 @@ public class WeaponDecorationConfigDrawer : PropertyDrawer
 
             case WeaponDecorationType.MeleeDecoration:
                 SerializedProperty meleeSwingAnimation = property.FindPropertyRelative("meleeSwingAnimation");
+                SerializedProperty weaponSize = property.FindPropertyRelative("weaponSize");
+
+                // Draw weaponSize
+                EditorGUI.PropertyField(fieldRect, weaponSize);
+                fieldRect.y += EditorGUIUtility.singleLineHeight + 2; // Move to the next line
+
+                // Draw meleeSwingAnimation
                 EditorGUI.PropertyField(fieldRect, meleeSwingAnimation, true); // Include children
                 break;
 
@@ -71,7 +78,7 @@ public class WeaponDecorationConfigDrawer : PropertyDrawer
                 break;
             case WeaponDecorationType.MeleeDecoration:
                 SerializedProperty meleeSwingAnimation = property.FindPropertyRelative("meleeSwingAnimation");
-                extraLines = 1 + CountChildProperties(meleeSwingAnimation); // Include child properties
+                extraLines = 3 + CountChildProperties(meleeSwingAnimation); // Include child properties
                 break;
                 // Add cases for other decoration types as needed
         }

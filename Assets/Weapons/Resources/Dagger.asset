@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a4f2da8d2984ff4280fa1302fa180a6, type: 3}
-  m_Name: MeleeConfig
+  m_Name: Dagger
   m_EditorClassIdentifier: 
-  weaponName: Melee
+  weaponName: Dagger
   description: 
-  icon: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
-  damage: 2
-  fireRate: 1
-  attackRange: 3
+  icon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  damage: 1
+  fireRate: 0.3
+  attackRange: 1.2
   weaponDecorations:
   - decorationType: 0
     projectilePrefab: {fileID: 0}
@@ -27,37 +27,28 @@ MonoBehaviour:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: -0.000011444092
-          inSlope: 0.80000293
-          outSlope: 0.80000293
-          tangentMode: 34
+          value: 0
+          inSlope: 0.635319
+          outSlope: 0.635319
+          tangentMode: 0
           weightedMode: 0
           inWeight: 0
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 0.5
-          value: 0.39999002
-          inSlope: 0.000011444092
-          outSlope: 0.000011444092
-          tangentMode: 34
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+          outWeight: 0.034554973
         - serializedVersion: 3
           time: 1
-          value: 0
-          inSlope: -0.79998004
-          outSlope: -0.79998004
-          tangentMode: 34
+          value: -0.0000005941838
+          inSlope: -5.732976
+          outSlope: -5.732976
+          tangentMode: 0
           weightedMode: 0
-          inWeight: 0.33333334
+          inWeight: 0.013612568
           outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
-        m_RotationOrder: 4
-      swingAngle: 120
-      duration: 0.5
-    weaponSize: 1
+        m_RotationOrder: 0
+      swingAngle: 1
+      duration: 0.2
+    weaponSize: 0.3
     extraDamage: 0
     extraFireRate: 0
     areaOfEffectRadius: 0

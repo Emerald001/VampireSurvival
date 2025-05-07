@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +11,7 @@ public class UnitVisuals : MonoBehaviour
 
     private Color originalColor;
     private Vector3 originalScale;
-    private Coroutine currentAnimationCoroutine;
+    private bool dying;
 
     private void Awake()
     {
@@ -30,117 +30,60 @@ public class UnitVisuals : MonoBehaviour
 
     public void PlayAttackAnimation()
     {
-        if (body == null)
+        if (body == null || dying)
             return;
 
-        // Interrupt any ongoing animation
-        if (currentAnimationCoroutine != null)
-            StopCoroutine(currentAnimationCoroutine);
-
-        currentAnimationCoroutine = StartCoroutine(AttackAnimation());
-    }
-
-    private IEnumerator AttackAnimation()
-    {
         // Flash white and scale down, then scale up
         body.color = Color.white;
-        body.transform.localScale = originalScale * 0.8f;
-
-        float duration = 0.2f;
-        float elapsed = 0f;
-
-        while (elapsed < duration)
+        LeanTween.scale(body.gameObject, originalScale * 0.8f, 0.1f).setOnComplete(() =>
         {
-            elapsed += Time.deltaTime;
-            body.transform.localScale = Vector3.Lerp(originalScale * 0.8f, originalScale * 1.2f, elapsed / duration);
-            yield return null;
-        }
-
-        // Gradually return to normal color and scale
-        elapsed = 0f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            body.color = Color.Lerp(Color.white, originalColor, elapsed / duration);
-            body.transform.localScale = Vector3.Lerp(originalScale * 1.2f, originalScale, elapsed / duration);
-            yield return null;
-        }
-
-        body.color = originalColor;
-        body.transform.localScale = originalScale;
-        currentAnimationCoroutine = null;
+            LeanTween.scale(body.gameObject, originalScale * 1.2f, 0.1f).setOnComplete(() =>
+            {
+                LeanTween.scale(body.gameObject, originalScale, 0.1f);
+                LeanTween.value(gameObject, Color.white, originalColor, 0.1f).setOnUpdate((Color color) =>
+                {
+                    body.color = color;
+                });
+            });
+        });
     }
 
     public void PlayHitAnimation()
     {
-        if (body == null)
+        if (body == null || dying)
             return;
 
-        // Interrupt any ongoing animation
-        if (currentAnimationCoroutine != null)
-            StopCoroutine(currentAnimationCoroutine);
-
-        currentAnimationCoroutine = StartCoroutine(HitAnimation());
-    }
-
-    private IEnumerator HitAnimation()
-    {
         // Flash red and scale up slightly
         body.color = Color.red;
-        body.transform.localScale = originalScale * 1.3f;
-
-        float duration = 0.1f;
-        yield return new WaitForSeconds(duration);
-
-        // Gradually return to normal color and scale
-        float elapsed = 0f;
-        while (elapsed < duration)
+        LeanTween.scale(body.gameObject, originalScale * 1.3f, 0.1f).setOnComplete(() =>
         {
-            elapsed += Time.deltaTime;
-            body.color = Color.Lerp(Color.red, originalColor, elapsed / duration);
-            body.transform.localScale = Vector3.Lerp(originalScale * 1.3f, originalScale, elapsed / duration);
-            yield return null;
-        }
-
-        body.color = originalColor;
-        body.transform.localScale = originalScale;
-        currentAnimationCoroutine = null;
+            LeanTween.scale(body.gameObject, originalScale, 0.1f);
+            LeanTween.value(gameObject, Color.red, originalColor, 0.1f).setOnUpdate((Color color) =>
+            {
+                body.color = color;
+            });
+        });
     }
 
-    public void PlayDeathAnimation()
+    public void PlayDeathAnimation(Action onComplete)
     {
         if (body == null || healthBar == null)
             return;
 
-        // Interrupt any ongoing animation
-        if (currentAnimationCoroutine != null)
-            StopCoroutine(currentAnimationCoroutine);
+        dying = true;
 
-        currentAnimationCoroutine = StartCoroutine(DeathAnimation());
-    }
-
-    private IEnumerator DeathAnimation()
-    {
-        float duration = 0.5f;
-        float elapsed = 0f;
-
-        Vector3 targetScale = Vector3.zero;
-        Color healthBarColor = healthBar.color;
-
-        while (elapsed < duration)
+        // Scale body to zero and fade out health bar
+        LeanTween.scale(body.gameObject, Vector3.zero, 0.5f);
+        LeanTween.value(gameObject, healthBar.color.a, 0f, 0.5f).setOnUpdate((float alpha) =>
         {
-            elapsed += Time.deltaTime;
-            body.transform.localScale = Vector3.Lerp(originalScale, targetScale, elapsed / duration);
-            healthBar.color = new Color(healthBarColor.r, healthBarColor.g, healthBarColor.b, Mathf.Lerp(healthBarColor.a, 0f, elapsed / duration));
-            yield return null;
-        }
+            Color healthBarColor = healthBar.color;
+            healthBar.color = new Color(healthBarColor.r, healthBarColor.g, healthBarColor.b, alpha);
+        }).setOnComplete(() =>
+        {
+            if (deathEffect != null)
+                Instantiate(deathEffect, transform.position, Quaternion.identity);
 
-        body.transform.localScale = targetScale;
-        healthBar.color = new Color(healthBarColor.r, healthBarColor.g, healthBarColor.b, 0f);
-
-        if (deathEffect != null)
-            Instantiate(deathEffect, transform.position, Quaternion.identity);
-
-        currentAnimationCoroutine = null;
+            onComplete?.Invoke();
+        });
     }
 }

@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Standardenemy
   m_EditorClassIdentifier: 
   health: 10
-  damage: 2
   speed: 2
-  attackRange: 1
+  weaponConfig: {fileID: 11400000, guid: f9a90a6877532ef45b204be6c03f524a, type: 2}
   enemyModel: {fileID: 0}
   deathEffect: {fileID: 0}

@@ -45,4 +45,13 @@ public class GameManager : MonoBehaviour
         Player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         camFollow.SetFollower(Player.gameObject);
     }
+
+    public void GameOver()
+    {
+        GlobalNumerals.CanMove = false;
+        GlobalNumerals.SpawnEnemies = false;
+
+        // Show game over UI or perform any other end game logic here
+        Debug.Log("Game Over");
+    }
 }
