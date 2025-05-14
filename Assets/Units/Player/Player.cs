@@ -5,12 +5,12 @@ public class Player : MonoBehaviour, IDamageable
     public int Health { get; set; }
     public int MaxHealth { get; set; }
     public float Speed { get; set; }
+    public bool Dead { get; set; }
 
     private UnitVisuals visuals;
     private WeaponHolder weaponHolder;
 
     private bool canMove = true;
-    private bool dead = false;
 
     private void Start()
     {
@@ -52,11 +52,12 @@ public class Player : MonoBehaviour, IDamageable
 
     public void TakeDamage(int damage)
     {
-        if (dead)
+        if (Dead)
             return;
 
         Health -= damage;
         visuals.UpdateHealthBar(Health, MaxHealth);
+        CameraShake.Shake(0.1f);
 
         if (Health <= 0)
         {
@@ -74,24 +75,13 @@ public class Player : MonoBehaviour, IDamageable
         {
             weaponHolder.Stop();
             canMove = false;
-            dead = true;
+            Dead = true;
 
-            foreach (var item in EnemyManager.spawnedEnemies)
-            {
-                var direction = (item.transform.position - transform.position).normalized;
-                var dis = Vector3.Distance(item.transform.position, transform.position);
+            weaponHolder.gameObject.SetActive(false);
+            visuals.gameObject.SetActive(false);
 
-                if (dis < 10)
-                    item.TakeKnockback(direction, (10 - dis) / 2);
-            }
-
-            // Optionally, you can disable the player object or trigger a game over screen here
+            EnemyManager.Instance.DoKnockback(10f, transform.position);
             GameManager.Instance.GameOver();
         });
     }
-}
-
-public class PlayerModifiers
-{
-
 }

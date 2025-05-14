@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Player playerPrefab;
     [SerializeField] private CameraFollow camFollow;
     [SerializeField] private EnemyManager enemyManager;
+    [SerializeField] private ExpierenceManager ExpManager;
 
     [SerializeField] private Vector2 mapSize;
     [SerializeField] private Transform map;
@@ -20,30 +21,28 @@ public class GameManager : MonoBehaviour
             Instance = this;
     }
 
-    private void OnEnable()
-    {
-        GlobalNumerals.SpawnEnemies = true;
-    }
-
     private void OnDisable()
     {
         GlobalNumerals.SpawnEnemies = false;
     }
 
-    private void Start()
+    public void StartGame()
     {
         map.localScale = new Vector3(mapSize.x / 10, 1, mapSize.y / 10);
         map.GetComponent<Renderer>().material.mainTextureScale = new Vector2(mapSize.x, mapSize.y);
 
-        SpawnPlayer();
-
-        enemyManager.StartSpawning();
-    }
-
-    private void SpawnPlayer()
-    {
         Player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         camFollow.SetFollower(Player.gameObject);
+
+        GlobalNumerals.SpawnEnemies = true;
+        enemyManager.StartSpawning();
+
+        // Hide main menu, show top UI, etc.
+        GUIManager.Instance.ShowMainMenu(false);
+        GUIManager.Instance.ShowTopUI(true);
+        GUIManager.Instance.ShowWeaponPicker(true);
+
+        ExpManager.SetUp();
     }
 
     public void GameOver()

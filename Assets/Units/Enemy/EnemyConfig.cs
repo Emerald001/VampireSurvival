@@ -6,6 +6,8 @@ public class EnemyConfig : ScriptableObject
     public int health;
     public float speed;
 
+    public int Exp;
+
     public WeaponConfig weaponConfig;
 
     public Sprite enemyModel;

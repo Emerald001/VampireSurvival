@@ -15,9 +15,9 @@ MonoBehaviour:
   weaponName: Ranged
   description: 
   icon: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
-  damage: 1
-  fireRate: 1
-  attackRange: 5
+  damage: 100
+  fireRate: 10
+  attackRange: 7
   weaponDecorations:
   - decorationType: 1
     projectilePrefab: {fileID: 2870586565947545796, guid: ffb716c48852aae4f81c1d56f5602f17, type: 3}
@@ -30,6 +30,7 @@ MonoBehaviour:
         m_RotationOrder: 4
       swingAngle: 0
       duration: 0
+    weaponSize: 0
     extraDamage: 0
     extraFireRate: 0
     areaOfEffectRadius: 0

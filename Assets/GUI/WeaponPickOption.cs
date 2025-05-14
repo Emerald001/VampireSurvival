@@ -14,11 +14,10 @@ public class WeaponPickOption : MonoBehaviour
 
     private WeaponConfig weapon;
 
-    public void SetData(WeaponConfig weapon, System.Action onClick)
+    public void SetData(WeaponConfig weapon)
     {
         this.weapon = weapon;
         button.onClick.AddListener(OnClick);
-        button.onClick.AddListener(() => onClick.Invoke());
 
         icon.sprite = weapon.icon;
         weaponName.text = weapon.weaponName;
@@ -31,6 +30,6 @@ public class WeaponPickOption : MonoBehaviour
     public void OnClick()
     {
         GameManager.Instance.Player.EquipWeapon(weapon);
-        GUIManager.Instance.ToggleWeaponPicker(false);
+        GUIManager.Instance.ShowWeaponPicker(false);
     }
 }

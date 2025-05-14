@@ -5,13 +5,16 @@ public class Enemy : MonoBehaviour, IDamageable
     public int Health { get; set; }
     public int MaxHealth { get; set; }
     public float Speed { get; set; }
+    public bool Dead { get; set; }
 
     private UnitVisuals enemyVisuals;
     private WeaponHolder weaponHolder;
     private bool canMove = true;
+    private EnemyConfig config;
 
     public void SetData(EnemyConfig config)
     {
+        this.config = config;
         Health = config.health;
         MaxHealth = config.health;
         Speed = config.speed;
@@ -31,7 +34,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void Move(Vector3 targetPosition)
     {
-        if (!GlobalNumerals.CanMove || !canMove)
+        if (!GlobalNumerals.CanMove || !canMove || Dead)
             return;
 
         var dir = (targetPosition - transform.position).normalized;
@@ -48,6 +51,9 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void TakeDamage(int damage)
     {
+        if (Dead)
+            return;
+
         Health -= damage;
         enemyVisuals.UpdateHealthBar(Health, MaxHealth);
         if (Health <= 0)
@@ -73,7 +79,19 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void Die()
     {
+        Dead = true;
         weaponHolder.Stop();
+
+        if (config != null && config.Exp > 0)
+        {
+            for (int i = 0; i < config.Exp; i++)
+            {
+                Vector3 spawnPos = transform.position + Random.insideUnitSphere * 0.3f;
+                spawnPos.z = 0;
+                ExpierencePickup expItem = Instantiate(ResourceManager.ExpierencePickup, spawnPos, Quaternion.identity);
+                expItem.SetData(config.Exp);
+            }
+        }
 
         enemyVisuals.PlayDeathAnimation(() =>
         {

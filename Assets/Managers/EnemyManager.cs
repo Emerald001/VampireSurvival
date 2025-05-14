@@ -9,6 +9,13 @@ public class EnemyManager : MonoBehaviour
 
     public static List<Enemy> spawnedEnemies { get; private set; } = new List<Enemy>();
 
+    public static EnemyManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     public async void StartSpawning()
     {
         while (true)
@@ -22,6 +29,18 @@ public class EnemyManager : MonoBehaviour
             }
 
             SpawnEnemy();
+        }
+    }
+
+    public void DoKnockback(float strength, Vector2 origin)
+    {
+        foreach (var enemy in spawnedEnemies)
+        {
+            var direction = (enemy.transform.position - (Vector3)origin).normalized;
+            var dis = Vector3.Distance(enemy.transform.position, origin);
+
+            if (dis < 10)
+                enemy.TakeKnockback(direction, (strength - dis) / 2);
         }
     }
 
@@ -41,7 +60,7 @@ public class EnemyManager : MonoBehaviour
 
         float maxDistance = 20f;
         float safeZoneRadius = 5f; // Define the radius of the safe zone around the player
-        float padding = 0.6f; 
+        float padding = 0.6f;
 
         Vector3 randomPosition;
         do

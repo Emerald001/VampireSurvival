@@ -13,12 +13,7 @@ public class WeaponPicker : MonoBehaviour
         foreach (var weapon in weapons)
         {
             var option = Instantiate(prefab, content);
-            option.SetData(weapon, OnClick);
+            option.SetData(weapon);
         }
-    }
-
-    private void OnClick()
-    {
-        GUIManager.Instance.ToggleWeaponPicker(false);
     }
 }
