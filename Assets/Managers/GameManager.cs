@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private CameraFollow camFollow;
     [SerializeField] private EnemyManager enemyManager;
     [SerializeField] private ExpierenceManager ExpManager;
+
+    [SerializeField] private List<WeaponConfig> weapons;
 
     [SerializeField] private Vector2 mapSize;
     [SerializeField] private Transform map;
@@ -34,13 +37,10 @@ public class GameManager : MonoBehaviour
         Player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         camFollow.SetFollower(Player.gameObject);
 
-        GlobalNumerals.SpawnEnemies = true;
-        enemyManager.StartSpawning();
-
         // Hide main menu, show top UI, etc.
         GUIManager.Instance.ShowMainMenu(false);
         GUIManager.Instance.ShowTopUI(true);
-        GUIManager.Instance.ShowWeaponPicker(true);
+        GUIManager.Instance.ShowWeaponPicker(weapons);
 
         ExpManager.SetUp();
     }

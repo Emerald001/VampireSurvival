@@ -1,11 +1,11 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GUIManager : MonoBehaviour
 {
     [Header("UI References")]
-    [SerializeField] private RectTransform weaponPickScreen;
+    [SerializeField] private OptionPicker optionPicker;
     [SerializeField] private RectTransform mainMenu;
     [SerializeField] private RectTransform pauseMenu;
     [SerializeField] private RectTransform gameOverScreen;
@@ -71,8 +71,13 @@ public class GUIManager : MonoBehaviour
         }
     }
 
-    public void ShowWeaponPicker(bool show)
+    public void ShowWeaponPicker<T>(List<T> values)
     {
-        weaponPickScreen.gameObject.SetActive(show);
+        optionPicker.SetOptions(values);
+    }
+
+    public void HideOptionPicker()
+    {
+        optionPicker.ClearOptions();
     }
 }

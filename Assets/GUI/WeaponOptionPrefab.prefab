@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5913310694613974012}
   - component: {fileID: 8816641804540691413}
   m_Layer: 5
-  m_Name: OptionPrefab
+  m_Name: WeaponOptionPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,7 +43,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 500, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8816641804540691413
 MonoBehaviour:
@@ -59,7 +59,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 7802492230038628252}
   icon: {fileID: 7654888180260980818}
-  weaponName: {fileID: 8892701269061306502}
+  nameText: {fileID: 8892701269061306502}
   fireRate: {fileID: 206415950628929322}
   damage: {fileID: 7839926509328403199}
   range: {fileID: 2323268416359268077}
@@ -859,7 +859,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 2037815483478224431}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
