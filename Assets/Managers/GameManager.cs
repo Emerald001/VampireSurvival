@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Transform map;
     [SerializeField] private AreaConfig areaConfig;
+    [SerializeField] private UnitBaseStats playerStats;
 
     public Player Player { get; private set; }
     public AreaConfig CurrentArea => currentArea;
@@ -32,6 +33,12 @@ public class GameManager : MonoBehaviour
         GlobalNumerals.SpawnEnemies = false;
     }
 
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.V))
+            GUIManager.Instance.ShowNewGameStartScreen(false);
+    }
+
     public void SetArea(AreaConfig area)
     {
         currentArea = area;
@@ -44,6 +51,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         Player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        Player.SetData(playerStats);
         camFollow.SetFollower(Player.gameObject);
 
         GUIManager.Instance.ShowMainMenu(false);

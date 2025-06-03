@@ -20,7 +20,7 @@ public class Player : Unit
             return;
 
         var dir = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
-        var newPosition = transform.position + dir * Stats.speed * Time.deltaTime;
+        var newPosition = transform.position + dir * Stats.Speed * Time.deltaTime;
 
         // Clamp the position to stay within the defined boundaries with padding
         var bounds = GameManager.Instance.CurrentArea.mapSize;
@@ -34,16 +34,16 @@ public class Player : Unit
 
     public void EquipWeapon(WeaponConfig weapon)
     {
-        weaponHolder.EquipWeapon(weapon);
+        weaponHolder.EquipWeapon(weapon, Stats);
     }
 
-    public override void TakeDamage(int damage)
+    public override void TakeDamage(float damage)
     {
         if (Dead)
             return;
 
         Health -= damage;
-        unitVisuals.UpdateHealthBar(Health, Stats.health);
+        unitVisuals.UpdateHealthBar(Health, Stats.Health);
         CameraShake.Shake(0.1f);
 
         if (Health <= 0)

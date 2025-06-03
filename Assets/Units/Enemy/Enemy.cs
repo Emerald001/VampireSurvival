@@ -9,11 +9,11 @@ public class Enemy : Unit
     {
         base.SetData(config);
 
-        this.config = config as EnemyConfig; // Cast to EnemyConfig
+        this.config = config as EnemyConfig;
         if (this.config != null)
         {
             Health = this.config.health;
-            weaponHolder.EquipWeapon(this.config.weaponConfig);
+            weaponHolder.EquipWeapon(this.config.weaponConfig, Stats);
         }
     }
 
@@ -30,7 +30,7 @@ public class Enemy : Unit
             return;
 
         var dir = (targetPosition - transform.position).normalized;
-        var newPosition = transform.position + dir * Stats.speed * Time.deltaTime;
+        var newPosition = transform.position + dir * Stats.Speed * Time.deltaTime;
 
         var bounds = GameManager.Instance.CurrentArea.mapSize;
         float padding = 0.6f; // Padding value
@@ -41,13 +41,13 @@ public class Enemy : Unit
         transform.position = newPosition;
     }
 
-    public override void TakeDamage(int damage)
+    public override void TakeDamage(float damage)
     {
         if (Dead)
             return;
 
         Health -= damage;
-        unitVisuals.UpdateHealthBar(Health, Stats.health);
+        unitVisuals.UpdateHealthBar(Health, Stats.Health);
 
         if (Health <= 0)
         {
@@ -92,27 +92,4 @@ public class Enemy : Unit
             Destroy(gameObject);
         });
     }
-}
-
-public abstract class Unit : MonoBehaviour, IDamageable
-{
-    public UnitStats Stats { get; protected set; }
-    public float Health { get; set; }
-    public bool Dead { get; set; }
-
-    protected UnitVisuals unitVisuals;
-    protected WeaponHolder weaponHolder;
-    protected bool canMove = true;
-
-    public virtual void SetData(UnitBaseStats config)
-    {
-        Stats = new UnitStats(config);
-        unitVisuals = GetComponentInChildren<UnitVisuals>();
-        weaponHolder = GetComponentInChildren<WeaponHolder>();
-    }
-
-    public abstract void Move(Vector3 targetPosition);
-    public abstract void TakeDamage(int damage);
-    public abstract void TakeKnockback(Vector2 dir, float power);
-    public abstract void Die();
 }

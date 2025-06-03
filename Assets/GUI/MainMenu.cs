@@ -10,7 +10,7 @@ public class MainMenu : MonoBehaviour
 
     public void Btn_StartGame()
     {
-        GameManager.Instance.StartGame();
+        GUIManager.Instance.ShowNewGameStartScreen(true);
     }
 
     public void Btn_Options()

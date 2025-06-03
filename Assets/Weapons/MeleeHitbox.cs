@@ -5,7 +5,7 @@ public class MeleeHitbox : MonoBehaviour
     [SerializeField] private float offset = .5f;
     [SerializeField] private float colliderOffset = .4f;
 
-    public int Damage { get; set; }
+    public float Damage { get; set; }
 
     public void SetSize(float weaponSize)
     {

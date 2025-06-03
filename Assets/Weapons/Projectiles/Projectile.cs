@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    private int damage = 10;
+    private float damage = 10;
 
-    public void SetData(int damage)
+    public void SetData(float damage)
     {
         this.damage = damage;
     }
