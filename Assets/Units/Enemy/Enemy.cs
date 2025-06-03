@@ -1,28 +1,20 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, IDamageable
+public class Enemy : Unit
 {
-    public int Health { get; set; }
-    public int MaxHealth { get; set; }
-    public float Speed { get; set; }
-    public bool Dead { get; set; }
-
-    private UnitVisuals enemyVisuals;
-    private WeaponHolder weaponHolder;
-    private bool canMove = true;
     private EnemyConfig config;
 
-    public void SetData(EnemyConfig config)
+    // Corrected method signature to match the base class
+    public override void SetData(UnitBaseStats config)
     {
-        this.config = config;
-        Health = config.health;
-        MaxHealth = config.health;
-        Speed = config.speed;
+        base.SetData(config);
 
-        enemyVisuals = GetComponentInChildren<UnitVisuals>();
-        weaponHolder = GetComponentInChildren<WeaponHolder>();
-
-        weaponHolder.EquipWeapon(config.weaponConfig);
+        this.config = config as EnemyConfig; // Cast to EnemyConfig
+        if (this.config != null)
+        {
+            Health = this.config.health;
+            weaponHolder.EquipWeapon(this.config.weaponConfig);
+        }
     }
 
     private void FixedUpdate()
@@ -32,13 +24,13 @@ public class Enemy : MonoBehaviour, IDamageable
             Move(target.position);
     }
 
-    public void Move(Vector3 targetPosition)
+    public override void Move(Vector3 targetPosition)
     {
         if (!GlobalNumerals.CanMove || !canMove || Dead)
             return;
 
         var dir = (targetPosition - transform.position).normalized;
-        var newPosition = transform.position + dir * Speed * Time.deltaTime;
+        var newPosition = transform.position + dir * Stats.speed * Time.deltaTime;
 
         var bounds = GameManager.Instance.CurrentArea.mapSize;
         float padding = 0.6f; // Padding value
@@ -49,25 +41,26 @@ public class Enemy : MonoBehaviour, IDamageable
         transform.position = newPosition;
     }
 
-    public void TakeDamage(int damage)
+    public override void TakeDamage(int damage)
     {
         if (Dead)
             return;
 
         Health -= damage;
-        enemyVisuals.UpdateHealthBar(Health, MaxHealth);
+        unitVisuals.UpdateHealthBar(Health, Stats.health);
+
         if (Health <= 0)
         {
             Die();
             return;
         }
-        enemyVisuals.PlayHitAnimation();
+        unitVisuals.PlayHitAnimation();
     }
 
-    public void TakeKnockback(Vector2 dir, float power)
+    public override void TakeKnockback(Vector2 dir, float power)
     {
         canMove = false;
-        
+
         float knockbackDuration = 0.5f;
         Vector3 knockbackTarget = transform.position + (Vector3)(dir.normalized * power);
 
@@ -77,7 +70,7 @@ public class Enemy : MonoBehaviour, IDamageable
             .setOnComplete(() => canMove = true);
     }
 
-    public void Die()
+    public override void Die()
     {
         Dead = true;
         weaponHolder.Stop();
@@ -93,10 +86,33 @@ public class Enemy : MonoBehaviour, IDamageable
             }
         }
 
-        enemyVisuals.PlayDeathAnimation(() =>
+        unitVisuals.PlayDeathAnimation(() =>
         {
             EnemyManager.spawnedEnemies.Remove(this);
             Destroy(gameObject);
         });
     }
+}
+
+public abstract class Unit : MonoBehaviour, IDamageable
+{
+    public UnitStats Stats { get; protected set; }
+    public float Health { get; set; }
+    public bool Dead { get; set; }
+
+    protected UnitVisuals unitVisuals;
+    protected WeaponHolder weaponHolder;
+    protected bool canMove = true;
+
+    public virtual void SetData(UnitBaseStats config)
+    {
+        Stats = new UnitStats(config);
+        unitVisuals = GetComponentInChildren<UnitVisuals>();
+        weaponHolder = GetComponentInChildren<WeaponHolder>();
+    }
+
+    public abstract void Move(Vector3 targetPosition);
+    public abstract void TakeDamage(int damage);
+    public abstract void TakeKnockback(Vector2 dir, float power);
+    public abstract void Die();
 }

@@ -1,39 +1,26 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour, IDamageable
+public class Player : Unit
 {
-    public int Health { get; set; }
-    public int MaxHealth { get; set; }
-    public float Speed { get; set; }
-    public bool Dead { get; set; }
-
-    private UnitVisuals visuals;
-    private WeaponHolder weaponHolder;
-
-    private bool canMove = true;
-
-    private void Start()
+    public override void SetData(UnitBaseStats config)
     {
-        visuals = GetComponentInChildren<UnitVisuals>();
-        weaponHolder = GetComponentInChildren<WeaponHolder>();
+        base.SetData(config);
 
-        MaxHealth = 10;
-        Health = MaxHealth;
-        Speed = 5f;
+        Health = config.health;
     }
 
     private void Update()
     {
-        Move();
+        Move(new());
     }
 
-    public void Move()
+    public override void Move(Vector3 targetPostion)
     {
         if (!GlobalNumerals.CanMove || !canMove)
             return;
 
         var dir = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
-        var newPosition = transform.position + dir * Speed * Time.deltaTime;
+        var newPosition = transform.position + dir * Stats.speed * Time.deltaTime;
 
         // Clamp the position to stay within the defined boundaries with padding
         var bounds = GameManager.Instance.CurrentArea.mapSize;
@@ -50,13 +37,13 @@ public class Player : MonoBehaviour, IDamageable
         weaponHolder.EquipWeapon(weapon);
     }
 
-    public void TakeDamage(int damage)
+    public override void TakeDamage(int damage)
     {
         if (Dead)
             return;
 
         Health -= damage;
-        visuals.UpdateHealthBar(Health, MaxHealth);
+        unitVisuals.UpdateHealthBar(Health, Stats.health);
         CameraShake.Shake(0.1f);
 
         if (Health <= 0)
@@ -65,24 +52,29 @@ public class Player : MonoBehaviour, IDamageable
             return;
         }
 
-        visuals.PlayHitAnimation();
+        unitVisuals.PlayHitAnimation();
     }
 
-    public void Die()
+    public override void Die()
     {
         canMove = false;
         Dead = true;
 
         Debug.Log("Player has died.");
-        visuals.PlayDeathAnimation(() => 
+        unitVisuals.PlayDeathAnimation(() => 
         {
             weaponHolder.Stop();
 
             weaponHolder.gameObject.SetActive(false);
-            visuals.gameObject.SetActive(false);
+            unitVisuals.gameObject.SetActive(false);
 
             EnemyManager.Instance.DoKnockback(10f, transform.position);
             GameManager.Instance.GameOver();
         });
+    }
+
+    public override void TakeKnockback(Vector2 dir, float power)
+    {
+        throw new System.NotImplementedException();
     }
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public interface IDamageable 
 {
-    public int Health { get; set; }
+    public float Health { get; set; }
 
     public bool Dead { get; set; }
 

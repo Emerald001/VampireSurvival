@@ -23,9 +23,9 @@ public class UnitVisuals : MonoBehaviour
         }
     }
 
-    public void UpdateHealthBar(int currentHealth, int maxHealth)
+    public void UpdateHealthBar(float currentHealth, float maxHealth)
     {
-        healthBar.fillAmount = (float)currentHealth / maxHealth;
+        healthBar.fillAmount = currentHealth / maxHealth;
     }
 
     public void PlayAttackAnimation()
