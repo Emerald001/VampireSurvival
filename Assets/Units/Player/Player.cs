@@ -36,7 +36,7 @@ public class Player : MonoBehaviour, IDamageable
         var newPosition = transform.position + dir * Speed * Time.deltaTime;
 
         // Clamp the position to stay within the defined boundaries with padding
-        var bounds = GameManager.Instance.MapSize;
+        var bounds = GameManager.Instance.CurrentArea.mapSize;
         float padding = 0.6f; // Padding value
 
         newPosition.x = Mathf.Clamp(newPosition.x, -(bounds.x / 2) + padding, (bounds.x / 2) - padding);
@@ -70,12 +70,13 @@ public class Player : MonoBehaviour, IDamageable
 
     public void Die()
     {
+        canMove = false;
+        Dead = true;
+
         Debug.Log("Player has died.");
         visuals.PlayDeathAnimation(() => 
         {
             weaponHolder.Stop();
-            canMove = false;
-            Dead = true;
 
             weaponHolder.gameObject.SetActive(false);
             visuals.gameObject.SetActive(false);

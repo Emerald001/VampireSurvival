@@ -40,7 +40,7 @@ public class Enemy : MonoBehaviour, IDamageable
         var dir = (targetPosition - transform.position).normalized;
         var newPosition = transform.position + dir * Speed * Time.deltaTime;
 
-        var bounds = GameManager.Instance.MapSize;
+        var bounds = GameManager.Instance.CurrentArea.mapSize;
         float padding = 0.6f; // Padding value
 
         newPosition.x = Mathf.Clamp(newPosition.x, -(bounds.x / 2) + padding, (bounds.x / 2) - padding);

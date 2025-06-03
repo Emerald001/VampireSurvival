@@ -55,7 +55,7 @@ public class EnemyManager : MonoBehaviour
 
     private Vector3 GetRandomSpawnPosition()
     {
-        Vector2 mapSize = GameManager.Instance.MapSize; // MapSize is a Vector2
+        Vector2 mapSize = GameManager.Instance.CurrentArea.mapSize; // MapSize is a Vector2
         Vector3 playerPosition = GameManager.Instance.Player.transform.position;
 
         float maxDistance = 20f;

@@ -12,16 +12,19 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private List<WeaponConfig> weapons;
 
-    [SerializeField] private Vector2 mapSize;
     [SerializeField] private Transform map;
+    [SerializeField] private AreaConfig areaConfig;
 
     public Player Player { get; private set; }
-    public Vector2 MapSize { get => mapSize; set => mapSize = value; }
+    public AreaConfig CurrentArea => currentArea;
+    private AreaConfig currentArea;
 
     private void Awake()
     {
         if (Instance == null)
             Instance = this;
+
+        SetArea(areaConfig);
     }
 
     private void OnDisable()
@@ -29,15 +32,20 @@ public class GameManager : MonoBehaviour
         GlobalNumerals.SpawnEnemies = false;
     }
 
-    public void StartGame()
+    public void SetArea(AreaConfig area)
     {
+        currentArea = area;
+        var mapSize = area.mapSize;
+
         map.localScale = new Vector3(mapSize.x / 10, 1, mapSize.y / 10);
         map.GetComponent<Renderer>().material.mainTextureScale = new Vector2(mapSize.x, mapSize.y);
+    }
 
+    public void StartGame()
+    {
         Player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         camFollow.SetFollower(Player.gameObject);
 
-        // Hide main menu, show top UI, etc.
         GUIManager.Instance.ShowMainMenu(false);
         GUIManager.Instance.ShowTopUI(true);
         GUIManager.Instance.ShowWeaponPicker(weapons);

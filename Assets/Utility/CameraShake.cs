@@ -5,7 +5,7 @@ public class CameraShake : MonoBehaviour
     public static CameraShake Instance { get; private set; }
 
     [SerializeField] private float shakeDuration = 0.2f;
-    [SerializeField] private float shakeFrequency = 20f;
+    //[SerializeField] private float shakeFrequency = 20f;
 
     private Vector3 originalPosition;
     private Coroutine shakeCoroutine;

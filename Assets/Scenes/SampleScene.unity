@@ -1417,8 +1417,8 @@ MonoBehaviour:
   weapons:
   - {fileID: 11400000, guid: cb766397fb6816042aa8234d99cb33d6, type: 2}
   - {fileID: 11400000, guid: 8ff8caf74ac983a4ab80a2ee6396023d, type: 2}
-  mapSize: {x: 100, y: 60}
   map: {fileID: 2063966839}
+  areaConfig: {fileID: 11400000, guid: 8d15d85f39295b3459096e5effc0775a, type: 2}
 --- !u!4 &823004382
 Transform:
   m_ObjectHideFlags: 0
