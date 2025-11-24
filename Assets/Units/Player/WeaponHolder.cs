@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class WeaponHolder : MonoBehaviour
 {
@@ -14,7 +13,7 @@ public class WeaponHolder : MonoBehaviour
     private GameObject weaponObject;
     private float fireCooldown = 0f;
 
-    public void EquipWeapon(WeaponConfig weapon)
+    public void EquipWeapon(WeaponConfig weapon, UnitStats statInstance)
     {
         if (EquippedWeapon != null && weaponObject != null)
             Destroy(weaponObject);
@@ -22,8 +21,10 @@ public class WeaponHolder : MonoBehaviour
         weaponObject = Instantiate(weapon.weaponPrefab, transform.position, Quaternion.identity);
         weaponObject.transform.SetParent(transform);
 
+        statInstance.SetWeaponConfig(weapon);
+
         EquippedWeapon = new();
-        EquippedWeapon.Initialize(this, weapon);
+        EquippedWeapon.Initialize(this, weapon, statInstance);
 
         // Apply all decorations from the WeaponConfig
         foreach (var decorationConfig in weapon.weaponDecorations)
@@ -46,17 +47,10 @@ public class WeaponHolder : MonoBehaviour
                 new RangedWeapon(EquippedWeapon, config.projectilePrefab),
             WeaponDecorationType.MeleeDecoration =>
                 new MeleeWeapon(EquippedWeapon, config.meleeSwingAnimation, weaponObject.GetComponent<MeleeHitbox>(), config.weaponSize),
-            WeaponDecorationType.DamageUpgrade =>
-                new DamageUpgrade(EquippedWeapon, config.extraDamage),
-            WeaponDecorationType.FireRateUpgrade =>
-                new FireRateUpgrade(EquippedWeapon, config.extraFireRate),
             _ => null
         };
 
-        if (decorator == null)
-            throw new NotSupportedException($"Unsupported decoration type: {config.decorationType}");
-
-        EquippedWeapon = decorator;
+        EquippedWeapon = decorator ?? throw new NotSupportedException($"Unsupported decoration type: {config.decorationType}");
         decorators.Add(decorator);
     }
 

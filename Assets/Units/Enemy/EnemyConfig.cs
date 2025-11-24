@@ -1,11 +1,8 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "EnemyConfig", menuName = "ScriptableObjects/EnemyConfig", order = 1)]
-public class EnemyConfig : ScriptableObject
+public class EnemyConfig : UnitBaseStats
 {
-    public int health;
-    public float speed;
-
     public int Exp;
 
     public WeaponConfig weaponConfig;

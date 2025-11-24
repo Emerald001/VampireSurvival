@@ -6,7 +6,7 @@ public abstract class WeaponDecorator : Weapon
 {
     public override WeaponHolder Owner => _baseWeapon.Owner;
 
-    public override int Damage => _baseWeapon.Damage;
+    public override float Damage => _baseWeapon.Damage;
     public override float Range => _baseWeapon.Range;
     public override float FireRate => _baseWeapon.FireRate;
 
@@ -95,40 +95,5 @@ public class RangedWeapon : WeaponDecorator
         // Rotate the projectile to face the direction it is moving
         Quaternion rotation = Quaternion.LookRotation(Vector3.forward, direction);
         projectile.transform.rotation = rotation;
-    }
-}
-
-public class DamageUpgrade : WeaponDecorator
-{
-    public override int Damage => base.Damage + _extraDamage;
-
-    private int _extraDamage;
-
-    public DamageUpgrade(Weapon baseWeapon, int extraDamage) : base(baseWeapon)
-    {
-        _extraDamage = extraDamage;
-    }
-
-    public override void Fire(Vector2 direction)
-    {
-        Debug.Log($"Upgraded weapon with extra damage: {_extraDamage}");
-        base.Fire(direction);
-    }
-}
-
-public class FireRateUpgrade : WeaponDecorator
-{
-    private float _extraFireRate;
-
-    public FireRateUpgrade(Weapon baseWeapon, float extraFireRate) : base(baseWeapon)
-    {
-        _extraFireRate = extraFireRate;
-        FireRate = _baseWeapon.FireRate - _extraFireRate;
-    }
-
-    public override void Fire(Vector2 direction)
-    {
-        Debug.Log($"Upgraded weapon with faster fire rate: {_extraFireRate}");
-        base.Fire(direction);
     }
 }
