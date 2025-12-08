@@ -10,11 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d3b5b7be129e2b4e80cc9f6e540511d, type: 3}
-  m_Name: PlayerBaseStats
-  m_EditorClassIdentifier: 
-  health: 10
-  speed: 2
-  damage: 1
-  attackRange: 1.5
-  fireRate: 2
-  attackSpeed: 1
+  m_Name: TriagleStats
+  m_EditorClassIdentifier: Assembly-CSharp::UnitBaseStats
+  unitName: 
+  unitIcon: {fileID: 0}
+  health: 7
+  speed: 3

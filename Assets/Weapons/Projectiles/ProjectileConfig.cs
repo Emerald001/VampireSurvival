@@ -1,16 +1,32 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class ProjectileConfig : MonoBehaviour
+[CreateAssetMenu(fileName = "ProjectileConfig", menuName = "ScriptableObjects/ProjectileConfig", order = 4)]
+public class ProjectileConfig : ScriptableObject
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [Header("Basic Info")]
+    public string projectileName;
+    public Sprite icon;
+    [TextArea(2, 4)]
+    public string description;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [Header("Base Stats")]
+    public float baseDamage = 10f;
+    public float speed = 10f;
+    public float lifetime = 5f;
+    public float size = 1f;
+
+    [Header("Behavior")]
+    public bool piercing = false;
+    public int maxPierceCount = 1;
+    public bool homing = false;
+    public float homingStrength = 5f;
+
+    [Header("Visual")]
+    public GameObject projectilePrefab;
+    public TrailRenderer trailPrefab;
+    public GameObject hitEffect;
+
+    [Header("Decorations")]
+    public List<ProjectileDecorationConfig> decorations = new();
 }

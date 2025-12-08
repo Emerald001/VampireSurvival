@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private ExpierenceManager ExpManager;
 
     [SerializeField] private List<WeaponConfig> weapons;
+    [SerializeField] private List<UnitBaseStats> players;
 
     [SerializeField] private Transform map;
     [SerializeField] private AreaConfig areaConfig;
@@ -19,6 +20,10 @@ public class GameManager : MonoBehaviour
     public Player Player { get; private set; }
     public AreaConfig CurrentArea => currentArea;
     private AreaConfig currentArea;
+
+    public UnitBaseStats CurrentPlayerConfig {get; set;}
+    public List<WeaponConfig> Weapons { get => weapons; set => weapons = value; }
+    public List<UnitBaseStats> Players { get => players; set => players = value; }
 
     private void Awake()
     {
@@ -51,12 +56,11 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         Player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
-        Player.SetData(playerStats);
+        Player.SetData(CurrentPlayerConfig);
         camFollow.SetFollower(Player.gameObject);
 
-        GUIManager.Instance.ShowMainMenu(false);
+        GUIManager.Instance.StartGame();
         GUIManager.Instance.ShowTopUI(true);
-        GUIManager.Instance.ShowWeaponPicker(weapons);
 
         ExpManager.SetUp();
     }

@@ -7,27 +7,15 @@ public class WeaponPickOption : PickOption<WeaponConfig>
     [SerializeField] private TextMeshProUGUI damage;
     [SerializeField] private TextMeshProUGUI range;
 
-    private WeaponConfig weapon;
-
-    public override void SetData(WeaponConfig weapon)
+    public override void SetData(WeaponConfig weapon, int index)
     {
-        this.weapon = weapon;
-
-        button.onClick.AddListener(OnClick);
+        base.SetData(weapon, index);
+        
         nameText.text = weapon.weaponName;
         icon.sprite = weapon.icon;
 
         fireRate.text = weapon.fireRate.ToString();
         damage.text = weapon.damage.ToString();
         range.text = weapon.attackRange.ToString();
-    }
-
-    protected override void OnClick()
-    {
-        GameManager.Instance.Player.EquipWeapon(weapon);
-        GUIManager.Instance.HideOptionPicker();
-
-        GlobalNumerals.SpawnEnemies = true;
-        EnemyManager.Instance.StartSpawning();
     }
 }

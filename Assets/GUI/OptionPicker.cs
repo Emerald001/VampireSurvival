@@ -5,35 +5,55 @@ using UnityEngine.UI;
 
 public class OptionPicker : MonoBehaviour
 {
-    public static OptionPicker Instance { get; private set; }
-    private void Awake() => Instance = this;
-
+    [SerializeField] private PickOption<UnitBaseStats> playerPrefab;
     [SerializeField] private PickOption<WeaponConfig> weaponPrefab;
     [SerializeField] private PickOption<ProjectileConfig> projectilePrefab;
     [SerializeField] private PickOption<WeaponDecorationConfig> weaponDecorationPrefab;
     [SerializeField] private PickOption<PlayerDecorationConfig> playerDecorationPrefab;
-    [SerializeField] private PickOption<PlayerConfig> playerPrefab;
     [SerializeField] private Transform content;
 
+    [Header("Animation Settings")]
     [SerializeField] private float initialDelay = 0.5f;
     [SerializeField] private float popInDelay = 0.05f;
     [SerializeField] private float popInDuration = 0.15f;
 
-    private List<GameObject> spawnedObjects = new();
+    [Header("Selection")]
+    [SerializeField] private Color selectedColor = Color.gray;
+    [SerializeField] private Color normalColor = Color.white;
 
-    public void SetOptions<T>(List<T> values)
+    private List<GameObject> spawnedObjects = new();
+    private bool allowSelection = false;
+    private object selectedItem;
+    private int selectedIndex = -1;
+
+    public void SetOptions<T>(List<T> values, System.Action<T> onSelect, bool allowSelection = false)
     {
         content.gameObject.SetActive(true);
+        this.allowSelection = allowSelection;
+        selectedItem = null;
 
         spawnedObjects.Clear();
 
         void SpawnItems<P, C>(PickOption<C> prefab) where C : class
         {
+            int index = 0;
             foreach (var item in values)
             {
+                int currentIndex = index;
+                index++;
+
                 var option = Instantiate(prefab, content);
-                option.transform.localScale = Vector3.one; // Ensure normal scale for layout
-                option.SetData(item as C);
+                option.transform.localScale = Vector3.one;
+                option.SetData(item as C, currentIndex);
+                
+                option.onSelected = (selected) =>
+                {
+                    if (this.allowSelection)
+                        SetSelectedItem<C>(selected, currentIndex);
+
+                    onSelect?.Invoke(item);
+                };
+
                 spawnedObjects.Add(option.gameObject);
             }
         }
@@ -52,18 +72,15 @@ public class OptionPicker : MonoBehaviour
             case nameof(PlayerDecorationConfig):
                 SpawnItems<PickOption<PlayerDecorationConfig>, PlayerDecorationConfig>(playerDecorationPrefab);
                 break;
-            case nameof(PlayerConfig):
-                SpawnItems<PickOption<PlayerConfig>, PlayerConfig>(playerPrefab);
+            case nameof(UnitBaseStats):
+                SpawnItems<PickOption<UnitBaseStats>, UnitBaseStats>(playerPrefab);
                 break;
             default:
                 Debug.LogError("Unsupported type: " + typeof(T));
                 break;
         }
 
-        // Force layout rebuild so ContentSizeFitter updates
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)content);
-
-        // Start coroutine for pop-in animation
         StartCoroutine(AnimatePopInCoroutine(spawnedObjects));
     }
 
@@ -92,17 +109,27 @@ public class OptionPicker : MonoBehaviour
             Destroy(child.gameObject);
 
         spawnedObjects.Clear();
+        selectedItem = null;
 
         content.gameObject.SetActive(false);
     }
-}
 
-public class PlayerDecorationConfig
-{
-    // Add properties for player decoration configuration
-}
+    public void SetSelectedItem<C>(object item, int index)
+    {
+        Debug.Log($"Item selected: {item}");
 
-public class PlayerConfig
-{
-    // Add properties for player configuration
+        selectedItem = item;
+        selectedIndex = index;
+        
+        foreach (var obj in spawnedObjects)
+        {
+            var optionInList = obj.GetComponent<PickOption<C>>(); 
+            optionInList.backgroundImage.color = (optionInList.Index == index) ? selectedColor : normalColor;
+        }
+    }
+
+    public T GetSelectedItem<T>() where T : class
+    {
+        return selectedItem as T;
+    }
 }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +11,7 @@ public class GUIManager : MonoBehaviour
 
     [SerializeField] private RectTransform gameOverScreen;
     [SerializeField] private RectTransform settingsScreen;
-    [SerializeField] private RectTransform playerAndWeaponPicker;
+    [SerializeField] private PlayerAndWeaponPicker playerAndWeaponPicker;
 
     [SerializeField] private RectTransform topUI;
     [SerializeField] private Image blurOverlay;
@@ -40,9 +39,9 @@ public class GUIManager : MonoBehaviour
         topUIShowPos = topUI.anchoredPosition;
 
         // Calculate offscreen positions for playerAndWeaponPicker
-        playerAndWeaponPickerShowPos = playerAndWeaponPicker.anchoredPosition;
-        playerAndWeaponPickerOffscreenRight = playerAndWeaponPickerShowPos + new Vector2(playerAndWeaponPicker.rect.width, 0);
-        playerAndWeaponPickerOffscreenLeft = playerAndWeaponPickerShowPos + new Vector2(-playerAndWeaponPicker.rect.width, 0);
+        playerAndWeaponPickerShowPos = playerAndWeaponPicker.RectTransform.anchoredPosition;
+        playerAndWeaponPickerOffscreenRight = playerAndWeaponPickerShowPos + new Vector2(playerAndWeaponPicker.RectTransform.rect.width, 0);
+        playerAndWeaponPickerOffscreenLeft = playerAndWeaponPickerShowPos + new Vector2(-playerAndWeaponPicker.RectTransform.rect.width, 0);
 
         // Calculate offscreen positions for settingsScreen
         settingsScreenShowPos = settingsScreen.anchoredPosition;
@@ -50,8 +49,9 @@ public class GUIManager : MonoBehaviour
         settingsScreenOffscreenLeft = settingsScreenShowPos + new Vector2(-settingsScreen.rect.width, 0);
     }
 
-    public void ShowMainMenu(bool show, float duration = 0.4f)
+    public void ShowMainMenu(bool show)
     {
+        float duration = 0.4f;
         LeanTween.cancel(mainMenu);
 
         Vector2 offscreenLeft = mainMenuShowPos + new Vector2(-mainMenu.rect.width, 0);
@@ -72,8 +72,9 @@ public class GUIManager : MonoBehaviour
         }
     }
 
-    public void ShowTopUI(bool show, float duration = 1)
+    public void ShowTopUI(bool show)
     {
+        float duration = 1;
         LeanTween.cancel(topUI);
 
         Vector2 offscreenAbove = topUIShowPos + new Vector2(0, topUI.rect.height + 50);
@@ -93,41 +94,51 @@ public class GUIManager : MonoBehaviour
         }
     }
 
-    public void ShowNewGameStartScreen(bool show, float duration = 0.4f)
+    public void ShowNewGameStartScreen(bool show)
     {
+        float duration = 0.4f;
+
         LeanTween.cancel(mainMenu);
-        LeanTween.cancel(playerAndWeaponPicker);
+        LeanTween.cancel(playerAndWeaponPicker.RectTransform);
 
         if (show)
         {
-            // Move main menu left, bring picker in from right
             mainMenu.gameObject.SetActive(true);
             playerAndWeaponPicker.gameObject.SetActive(true);
 
             mainMenu.anchoredPosition = mainMenuShowPos;
-            playerAndWeaponPicker.anchoredPosition = playerAndWeaponPickerOffscreenRight;
+            playerAndWeaponPicker.RectTransform.anchoredPosition = playerAndWeaponPickerOffscreenRight;
 
             LeanTween.move(mainMenu, mainMenuShowPos + new Vector2(-mainMenu.rect.width, 0), duration)
                 .setEase(LeanTweenType.easeOutCubic);
 
-            LeanTween.move(playerAndWeaponPicker, playerAndWeaponPickerShowPos, duration)
-                .setEase(LeanTweenType.easeOutCubic);
+            LeanTween.move(playerAndWeaponPicker.RectTransform, playerAndWeaponPickerShowPos, duration)
+                .setEase(LeanTweenType.easeOutCubic)
+                .setOnComplete(() => { playerAndWeaponPicker.SetPickers(); });
         }
         else
         {
-            // Move both left, hide picker after
-            LeanTween.move(mainMenu, mainMenuShowPos + new Vector2(-mainMenu.rect.width * 2, 0), duration)
-                .setEase(LeanTweenType.easeInCubic)
-                .setOnComplete(() => mainMenu.gameObject.SetActive(false));
+            mainMenu.gameObject.SetActive(true);
+            LeanTween.move(mainMenu, mainMenuShowPos, duration)
+                .setEase(LeanTweenType.easeInCubic);
 
-            LeanTween.move(playerAndWeaponPicker, playerAndWeaponPickerOffscreenLeft, duration)
+            LeanTween.move(playerAndWeaponPicker.RectTransform, playerAndWeaponPickerOffscreenRight, duration)
                 .setEase(LeanTweenType.easeInCubic)
                 .setOnComplete(() => playerAndWeaponPicker.gameObject.SetActive(false));
         }
     }
 
-    public void ShowSettingsScreen(bool show, float duration = 0.4f)
+    public void StartGame()
     {
+        LeanTween.move(playerAndWeaponPicker.RectTransform, playerAndWeaponPickerOffscreenLeft, .4f)
+            .setEase(LeanTweenType.easeInCubic)
+            .setOnComplete(() => { playerAndWeaponPicker.gameObject.SetActive(false); ShowTopUI(true);});
+    }
+
+    public void ShowSettingsScreen(bool show)
+    {
+        float duration = 0.4f;
+
         LeanTween.cancel(mainMenu);
         LeanTween.cancel(settingsScreen);
 
@@ -157,15 +168,5 @@ public class GUIManager : MonoBehaviour
             LeanTween.move(mainMenu, mainMenuShowPos, duration)
                 .setEase(LeanTweenType.easeOutCubic);
         }
-    }
-
-    public void ShowWeaponPicker<T>(List<T> values)
-    {
-        optionPicker.SetOptions(values);
-    }
-
-    public void HideOptionPicker()
-    {
-        optionPicker.ClearOptions();
     }
 }
