@@ -62,6 +62,8 @@ public class GameManager : MonoBehaviour
         GUIManager.Instance.StartGame();
         GUIManager.Instance.ShowTopUI(true);
 
+        GlobalNumerals.SpawnEnemies = true;
+        enemyManager.StartSpawning();
         ExpManager.SetUp();
     }
 

@@ -23,6 +23,12 @@ public class UnitVisuals : MonoBehaviour
         }
     }
 
+    public void SetData(UnitBaseStats stats)
+    {
+        UpdateHealthBar(stats.health, stats.health);
+        body.sprite = stats.unitIcon;
+    }
+
     public void UpdateHealthBar(float currentHealth, float maxHealth)
     {
         healthBar.fillAmount = currentHealth / maxHealth;

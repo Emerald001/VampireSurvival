@@ -7,6 +7,7 @@ public class Player : Unit
         base.SetData(config);
 
         Health = config.health;
+        unitVisuals.SetData(config);
     }
 
     private void Update()

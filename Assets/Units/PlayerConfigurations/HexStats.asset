@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: HexStats
   m_EditorClassIdentifier: 
   unitName: Hex
-  unitIcon: {fileID: 0}
+  unitIcon: {fileID: -2135585597343286014, guid: eed45a33cd08446c8b88325cf82fc52f, type: 3}
   health: 10
-  speed: 2
+  speed: 4.5

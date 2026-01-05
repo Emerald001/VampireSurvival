@@ -1787,6 +1787,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: eb1f70fcded202d47b5aaba5744b569c, type: 2}
   - {fileID: 11400000, guid: 14319b378561b1a42bc43f1370a8c899, type: 2}
   - {fileID: 11400000, guid: 3b9e3a82bf098044abc6b26e1143bd6b, type: 2}
+  - {fileID: 11400000, guid: f220a40aa70a2a242913b48ff2322162, type: 2}
   map: {fileID: 2063966839}
   areaConfig: {fileID: 11400000, guid: 8d15d85f39295b3459096e5effc0775a, type: 2}
   playerStats: {fileID: 11400000, guid: 14319b378561b1a42bc43f1370a8c899, type: 2}

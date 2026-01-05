@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d3b5b7be129e2b4e80cc9f6e540511d, type: 3}
-  m_Name: CircleStats
+  m_Name: TriangleStats
   m_EditorClassIdentifier: Assembly-CSharp::UnitBaseStats
-  unitName: Circle
-  unitIcon: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
-  health: 15
-  speed: 3
+  unitName: Triangle
+  unitIcon: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
+  health: 7
+  speed: 6
